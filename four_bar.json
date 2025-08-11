@@ -1,0 +1,202 @@
+{
+  "version": "1.0",
+  "id": "four_bar_example",
+  "name": "Planar Four-Bar",
+  "type": "planar_mechanism",
+  "unit_length": "mm",
+  "unit_angle": "deg",
+  "convention": {
+    "world_frame": "x-right, y-up, ccw-positive"
+  },
+  "links": [
+    {
+      "id": "L1",
+      "name": "ground",
+      "isGrounded": true,
+      "pose": {
+        "position": [
+          0,
+          0
+        ],
+        "angle": 0
+      },
+      "points": [
+        {
+          "id": "A",
+          "name": "A",
+          "position": [
+            0,
+            0
+          ]
+        },
+        {
+          "id": "D",
+          "name": "D",
+          "position": [
+            300,
+            0
+          ]
+        }
+      ],
+      "directions": [
+        {
+          "id": "ax0",
+          "name": "x_axis",
+          "angle": 0
+        }
+      ],
+      "lines": [
+        {
+          "id": "AD",
+          "name": "AD",
+          "point_ids": [
+            "A",
+            "D"
+          ]
+        }
+      ],
+      "circles": [],
+      "arcs": []
+    },
+    {
+      "id": "L2",
+      "name": "input",
+      "isGrounded": false,
+      "pose": {
+        "position": [
+          0,
+          0
+        ],
+        "angle": 0
+      },
+      "points": [
+        {
+          "id": "A2",
+          "name": "A2",
+          "position": [
+            0,
+            0
+          ]
+        },
+        {
+          "id": "B",
+          "name": "B",
+          "position": [
+            120,
+            0
+          ]
+        }
+      ],
+      "directions": [],
+      "lines": [],
+      "circles": [],
+      "arcs": []
+    },
+    {
+      "id": "L3",
+      "name": "coupler",
+      "isGrounded": false,
+      "pose": {
+        "position": [
+          0,
+          0
+        ],
+        "angle": 0
+      },
+      "points": [
+        {
+          "id": "B3",
+          "name": "B3",
+          "position": [
+            0,
+            0
+          ]
+        },
+        {
+          "id": "C",
+          "name": "C",
+          "position": [
+            150,
+            0
+          ]
+        }
+      ],
+      "directions": [],
+      "lines": [],
+      "circles": [],
+      "arcs": []
+    },
+    {
+      "id": "L4",
+      "name": "output",
+      "isGrounded": false,
+      "pose": {
+        "position": [
+          0,
+          0
+        ],
+        "angle": 0
+      },
+      "points": [
+        {
+          "id": "C4",
+          "name": "C4",
+          "position": [
+            0,
+            0
+          ]
+        },
+        {
+          "id": "D4",
+          "name": "D4",
+          "position": [
+            220,
+            0
+          ]
+        }
+      ],
+      "directions": [],
+      "lines": [],
+      "circles": [],
+      "arcs": []
+    }
+  ],
+  "joints": [
+    {
+      "id": "R1",
+      "name": "A_rev",
+      "type": "revolute",
+      "parent": "L1",
+      "point_id_parent": "A",
+      "child": "L2",
+      "point_id_child": "A2"
+    },
+    {
+      "id": "R2",
+      "name": "B_rev",
+      "type": "revolute",
+      "parent": "L2",
+      "point_id_parent": "B",
+      "child": "L3",
+      "point_id_child": "B3"
+    },
+    {
+      "id": "R3",
+      "name": "C_rev",
+      "type": "revolute",
+      "parent": "L3",
+      "point_id_parent": "C",
+      "child": "L4",
+      "point_id_child": "C4"
+    },
+    {
+      "id": "R4",
+      "name": "D_rev",
+      "type": "revolute",
+      "parent": "L1",
+      "point_id_parent": "D",
+      "child": "L4",
+      "point_id_child": "D4"
+    }
+  ]
+}

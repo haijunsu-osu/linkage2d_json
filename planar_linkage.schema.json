@@ -1,0 +1,536 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/planar_linkage.schema.json",
+  "title": "Planar Linkage",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "id",
+    "name",
+    "type",
+    "unit_length",
+    "unit_angle",
+    "convention",
+    "links",
+    "joints"
+  ],
+  "properties": {
+    "version": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "type": {
+      "const": "planar_mechanism"
+    },
+    "unit_length": {
+      "type": "string",
+      "enum": [
+        "mm",
+        "cm",
+        "m",
+        "in",
+        "px"
+      ]
+    },
+    "unit_angle": {
+      "type": "string",
+      "enum": [
+        "deg",
+        "rad"
+      ]
+    },
+    "convention": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "world_frame": {
+          "type": "string"
+        }
+      }
+    },
+    "links": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/link"
+      }
+    },
+    "joints": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/joint"
+      }
+    }
+  },
+  "$defs": {
+    "pose": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "position",
+        "angle"
+      ],
+      "properties": {
+        "position": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "angle": {
+          "type": "number"
+        }
+      }
+    },
+    "point": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "position"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "position": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        }
+      }
+    },
+    "direction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "angle"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "angle": {
+          "type": "number"
+        }
+      }
+    },
+    "line": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "point_ids"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "point_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        }
+      }
+    },
+    "circle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "center_point_id",
+        "radius"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "center_point_id": {
+          "type": "string"
+        },
+        "radius": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "arc": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "center_point_id",
+        "radius",
+        "start_angle",
+        "end_angle",
+        "direction"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "center_point_id": {
+          "type": "string"
+        },
+        "radius": {
+          "type": "number",
+          "minimum": 0
+        },
+        "start_angle": {
+          "type": "number"
+        },
+        "end_angle": {
+          "type": "number"
+        },
+        "direction": {
+          "type": "string",
+          "enum": [
+            "ccw",
+            "cw"
+          ]
+        }
+      }
+    },
+    "link": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "isGrounded",
+        "pose",
+        "points",
+        "directions",
+        "lines",
+        "circles",
+        "arcs"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "isGrounded": {
+          "type": "boolean"
+        },
+        "pose": {
+          "$ref": "#/$defs/pose"
+        },
+        "points": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/point"
+          },
+          "uniqueItems": true
+        },
+        "directions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/direction"
+          },
+          "uniqueItems": true
+        },
+        "lines": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/line"
+          },
+          "uniqueItems": true
+        },
+        "circles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/circle"
+          },
+          "uniqueItems": true
+        },
+        "arcs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/arc"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "revolute_joint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "type",
+        "parent",
+        "point_id_parent",
+        "child",
+        "point_id_child"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "const": "revolute"
+        },
+        "parent": {
+          "type": "string"
+        },
+        "child": {
+          "type": "string"
+        },
+        "point_id_parent": {
+          "type": "string"
+        },
+        "point_id_child": {
+          "type": "string"
+        }
+      }
+    },
+    "prismatic_joint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "type",
+        "parent",
+        "axis_parent",
+        "child",
+        "point_id_child"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "const": "prismatic"
+        },
+        "parent": {
+          "type": "string"
+        },
+        "child": {
+          "type": "string"
+        },
+        "axis_parent": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "point_id",
+            "direction_id"
+          ],
+          "properties": {
+            "point_id": {
+              "type": "string"
+            },
+            "direction_id": {
+              "type": "string"
+            }
+          }
+        },
+        "point_id_child": {
+          "type": "string"
+        },
+        "limits": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "min",
+            "max"
+          ],
+          "properties": {
+            "min": {
+              "type": "number"
+            },
+            "max": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    },
+    "pin_in_slot_joint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "type",
+        "parent",
+        "line_id_parent",
+        "child",
+        "point_id_child"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "const": "pin-in-slot"
+        },
+        "parent": {
+          "type": "string"
+        },
+        "child": {
+          "type": "string"
+        },
+        "line_id_parent": {
+          "type": "string"
+        },
+        "point_id_child": {
+          "type": "string"
+        }
+      }
+    },
+    "gear_joint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "type",
+        "parent",
+        "child",
+        "ratio",
+        "phase_offset"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "const": "gear"
+        },
+        "parent": {
+          "type": "string"
+        },
+        "child": {
+          "type": "string"
+        },
+        "ratio": {
+          "type": "number"
+        },
+        "phase_offset": {
+          "type": "number"
+        },
+        "teeth_parent": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "teeth_child": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "weld_joint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "type",
+        "parent",
+        "child",
+        "relative_pos",
+        "relative_angle"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "const": "weld"
+        },
+        "parent": {
+          "type": "string"
+        },
+        "child": {
+          "type": "string"
+        },
+        "relative_pos": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "relative_angle": {
+          "type": "number"
+        }
+      }
+    },
+    "joint": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/revolute_joint"
+        },
+        {
+          "$ref": "#/$defs/prismatic_joint"
+        },
+        {
+          "$ref": "#/$defs/pin_in_slot_joint"
+        },
+        {
+          "$ref": "#/$defs/gear_joint"
+        },
+        {
+          "$ref": "#/$defs/weld_joint"
+        }
+      ]
+    }
+  }
+}
