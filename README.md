@@ -202,7 +202,7 @@ Each joint connects a **parent** link to a **child** link.
 The following example JSON files are included and schema-compliant:
 - `four_bar.json` (four-bar linkage)
 - `crank_slider.json` (slider-crank)
-- `crank_slider_slot.json` (crank-slider with slot)
+- `crank_pin_in_slot.json` (crank-slider with slot)
 - `four_bar_weld.json` (four-bar with welded link and circle)
 
 
