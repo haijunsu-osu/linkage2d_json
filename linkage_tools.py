@@ -9,6 +9,7 @@ from jsonschema.exceptions import ValidationError
 import matplotlib.animation as animation
 import numpy as np
 from copy import deepcopy
+from planar_linkage.linkage2d import Linkage2D
 
 def validate_json(schema_path, data_path):
     with open(schema_path, "r", encoding="utf-8") as f:
@@ -76,6 +77,121 @@ def plot_linkage(data, ax=None):
     ax.set_ylabel(f"Y ({data.get('unit_length', 'mm')})")
     if ax is None:
         plt.show()
+
+# OOP-based plotting for Linkage2D
+def plot_linkage2d(linkage: Linkage2D, ax=None):
+    unit_angle = linkage.unit_angle
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(8, 6))
+    ax.set_aspect('equal')
+    ax.grid(True, which='both', linestyle='--', linewidth=0.5)
+    for link in linkage.links:
+        pose = link.pose
+        origin = transform_point([0, 0], pose, unit_angle)
+        axis_len = 40
+        x_axis_end = transform_point([axis_len, 0], pose, unit_angle)
+        y_axis_end = transform_point([0, axis_len], pose, unit_angle)
+        ax.arrow(origin[0], origin[1], x_axis_end[0]-origin[0], x_axis_end[1]-origin[1], head_width=8, head_length=12, fc='r', ec='r')
+        ax.arrow(origin[0], origin[1], y_axis_end[0]-origin[0], y_axis_end[1]-origin[1], head_width=8, head_length=12, fc='g', ec='g')
+        ax.text(origin[0], origin[1], link.id, fontsize=10, color='purple', ha='left', va='top')
+        for pt in link.points:
+            world_pt = transform_point(pt['position'], pose, unit_angle)
+            ax.plot(world_pt[0], world_pt[1], 'o', color='red', markersize=6)
+            ax.text(world_pt[0], world_pt[1], pt['id'], fontsize=9, ha='right', va='bottom')
+        pt_ids = [pt['id'] for pt in link.points]
+        pts = {pt['id']: transform_point(pt['position'], pose, unit_angle) for pt in link.points}
+        for i in range(len(pt_ids)):
+            for j in range(i+1, len(pt_ids)):
+                p1 = pts[pt_ids[i]]
+                p2 = pts[pt_ids[j]]
+                ax.plot([p1[0], p2[0]], [p1[1], p2[1]], '-', color='black', linewidth=3)
+        for circle in link.circles:
+            center_id = circle.get('center_point_id')
+            radius = circle['radius']
+            if center_id and center_id in pts:
+                center = pts[center_id]
+            else:
+                center = None
+                if 'center' in circle:
+                    center = transform_point(circle['center'], pose, unit_angle)
+                elif 'center_id' in circle:
+                    for pt in link.points:
+                        if pt['id'] == circle['center_id']:
+                            center = transform_point(pt['position'], pose, unit_angle)
+                            break
+            if center is not None:
+                circ_patch = mpatches.Circle(center, radius, fill=False, color='blue', linewidth=2, linestyle='--')
+                ax.add_patch(circ_patch)
+    ax.set_title(linkage.name)
+    ax.set_xlabel(f"X ({linkage.unit_length})")
+    ax.set_ylabel(f"Y ({linkage.unit_length})")
+    if ax is None:
+        plt.show()
+
+# OOP-based animation for Linkage2D
+def animate_linkage2d(json_file):
+    with open(json_file, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    linkage = Linkage2D.from_json(data)
+    # Find the first revolute joint as the crank (or 'R1' if present)
+    crank_joint = None
+    for joint in linkage.joints:
+        if getattr(joint, 'type', None) == 'revolute' and (joint.id == 'R1' or crank_joint is None):
+            crank_joint = joint
+            if joint.id == 'R1':
+                break
+    if crank_joint is None:
+        raise ValueError("No revolute joint found to drive as crank.")
+    parent_id = crank_joint.parent
+    child_id = crank_joint.child
+    parent_link = next(l for l in linkage.links if l.id == parent_id)
+    parent_angle = parent_link.pose['angle']
+    unit_angle = linkage.unit_angle
+    fig, ax = plt.subplots(figsize=(8, 6))
+    n_frames = 90
+    angles = np.linspace(0, 360 if unit_angle=='deg' else 2*np.pi, n_frames)
+
+    # Compute bounding box for all points in all frames (using initial pose)
+    all_points = []
+    temp_linkage = Linkage2D.from_json(data)
+    for drive_angle in angles:
+        driven = (child_id, parent_id, drive_angle)
+        temp_linkage.solve_linkage(driven=driven, initial_pose=None, verbose=0)
+        for link in temp_linkage.links:
+            pose = link.pose
+            for pt in link.points:
+                world_pt = transform_point(pt['position'], pose, unit_angle)
+                all_points.append(world_pt)
+    all_points = np.array(all_points)
+    x_min, y_min = np.min(all_points, axis=0)
+    x_max, y_max = np.max(all_points, axis=0)
+    pad = 20
+    xlim = (x_min - pad, x_max + pad)
+    ylim = (y_min - pad, y_max + pad)
+
+    # Prepare pose vector for continuity
+    pose_guess = None
+
+    def animate_frame(i):
+        nonlocal pose_guess
+        ax.clear()
+        drive_angle = angles[i]
+        driven = (child_id, parent_id, drive_angle)
+        # Use the same linkage object, only update poses
+        linkage.solve_linkage(driven=driven, initial_pose=pose_guess, verbose=0)
+        # Extract pose vector for next frame
+        pose_guess = []
+        for link in linkage.links:
+            if not link.isGrounded:
+                pose_guess.extend(link.pose['position'])
+                pose_guess.append(link.pose['angle'])
+        plot_linkage2d(linkage, ax=ax)
+        ax.set_title(f"{linkage.name}\n{crank_joint.id} angle: {drive_angle:.1f} {unit_angle}")
+        ax.set_xlim(xlim)
+        ax.set_ylim(ylim)
+
+    ani = animation.FuncAnimation(fig, animate_frame, frames=n_frames, interval=50, repeat=True)
+    plt.show()
 
 def solve_and_plot(json_file):
     solve_linkage(json_file)
@@ -168,6 +284,9 @@ def main():
     parser_animate = subparsers.add_parser('animate', help='Animate a linkage by driving R1')
     parser_animate.add_argument('json', help='Path to linkage JSON file')
 
+    parser_animate2d = subparsers.add_parser('animate2d', help='Animate a linkage (OOP Linkage2D) by driving the crank')
+    parser_animate2d.add_argument('json', help='Path to linkage JSON file')
+
     args = parser.parse_args()
     if args.command == 'validate':
         sys.exit(validate_json(args.schema, args.json))
@@ -177,6 +296,8 @@ def main():
         solve_and_plot(args.json)
     elif args.command == 'animate':
         animate(args.json)
+    elif args.command == 'animate2d':
+        animate_linkage2d(args.json)
 
 if __name__ == "__main__":
     # Example usage:
