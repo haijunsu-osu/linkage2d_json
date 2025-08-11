@@ -89,10 +89,10 @@
     }
   ],
   "joints": [
-    {"id": "R1", "name": "R1", "type": "revolute", "parent": "L1", "point_id_parent": "A", "child": "L2", "point_id_child": "A2"},
-    {"id": "R2", "name": "R2", "type": "revolute", "parent": "L2", "point_id_parent": "B", "child": "L3", "point_id_child": "B3"},
-    {"id": "R3", "name": "R3", "type": "revolute", "parent": "L3", "point_id_parent": "C", "child": "L4", "point_id_child": "C4"},
-    {"id": "R4", "name": "R4", "type": "revolute", "parent": "L1", "point_id_parent": "D", "child": "L4", "point_id_child": "D4"},
-    {"id": "W1", "name": "Weld", "type": "weld", "parent": "L3", "child": "L5", "relative_pos": [0, 0], "relative_angle": 0}
+  {"id": "R1", "name": "R1", "type": "revolute", "parent": "L1", "point_id_parent": "A", "child": "L2", "point_id_child": "A2"},
+  {"id": "R2", "name": "R2", "type": "revolute", "parent": "L2", "point_id_parent": "B", "child": "L3", "point_id_child": "B3"},
+  {"id": "R3", "name": "R3", "type": "revolute", "parent": "L3", "point_id_parent": "C", "child": "L4", "point_id_child": "C4"},
+  {"id": "R4", "name": "R4", "type": "revolute", "parent": "L1", "point_id_parent": "D", "child": "L4", "point_id_child": "D4"},
+  {"id": "W1", "name": "Weld", "type": "weld", "parent": "L3", "child": "L5", "relative_pose": {"position": [0, 0], "angle": 0}}
   ]
 }

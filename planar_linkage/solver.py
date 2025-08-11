@@ -111,11 +111,11 @@ def constraint_equations(pose_vec, links, joints, grounded_mask, driven=None):
         elif joint['type'] == 'weld':
             parent_id = joint['parent']
             child_id = joint['child']
-            rel_pos = joint.get('relative_pos', [0, 0])
-            rel_angle = joint.get('relative_angle', 0)
+            rel_pose = joint.get('relative_pose', {"position": [0, 0], "angle": 0})
+            rel_pos = rel_pose.get('position', [0, 0])
+            rel_angle = rel_pose.get('angle', 0)
             parent_link = next(l for l in links if l['id'] == parent_id)
             child_link = next(l for l in links if l['id'] == child_id)
-            # Transform the relative position from parent to world
             parent_pose = parent_link['pose']
             child_pose = child_link['pose']
             # Compute world position of the weld point on parent
@@ -127,10 +127,7 @@ def constraint_equations(pose_vec, links, joints, grounded_mask, driven=None):
             # Constraint 3: angles must differ by rel_angle
             parent_angle = parent_pose.get('angle', 0)
             child_angle = child_pose.get('angle', 0)
-            if unit_angle == 'deg':
-                eqs.append((child_angle - parent_angle) - rel_angle)
-            else:
-                eqs.append((child_angle - parent_angle) - rel_angle)
+            eqs.append((child_angle - parent_angle) - rel_angle)
         else:
             pass
     # Add driven constraint if specified (for animation)

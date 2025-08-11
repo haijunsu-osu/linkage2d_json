@@ -486,36 +486,15 @@
         "type",
         "parent",
         "child",
-        "relative_pos",
-        "relative_angle"
+        "relative_pose"
       ],
       "properties": {
-        "id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "type": {
-          "const": "weld"
-        },
-        "parent": {
-          "type": "string"
-        },
-        "child": {
-          "type": "string"
-        },
-        "relative_pos": {
-          "type": "array",
-          "items": {
-            "type": "number"
-          },
-          "minItems": 2,
-          "maxItems": 2
-        },
-        "relative_angle": {
-          "type": "number"
-        }
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "type": { "const": "weld" },
+        "parent": { "type": "string" },
+        "child": { "type": "string" },
+        "relative_pose": { "$ref": "#/$defs/pose" }
       }
     },
     "joint": {
