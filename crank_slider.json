@@ -1,0 +1,117 @@
+{
+  "version": "1.0",
+  "id": "crank_slider_example",
+  "name": "Planar Crank-Slider",
+  "type": "planar_mechanism",
+  "unit_length": "mm",
+  "unit_angle": "deg",
+  "convention": {
+    "world_frame": "x-right, y-up, ccw-positive"
+  },
+  "links": [
+    {
+      "id": "L1",
+      "name": "ground",
+      "isGrounded": true,
+      "pose": { "position": [0, 0], "angle": 0 },
+      "points": [
+        { "id": "A", "name": "A", "position": [0, 0] },
+        { "id": "D", "name": "D", "position": [200, 0] }
+      ],
+      "directions": [
+        { "id": "x_axis", "name": "x_axis", "angle": 0 }
+      ],
+      "lines": [],
+      "circles": [],
+      "arcs": []
+    },
+    {
+      "id": "L2",
+      "name": "crank",
+      "isGrounded": false,
+      "pose": { "position": [50, 50], "angle": 0 },
+      "points": [
+        { "id": "A2", "name": "A2", "position": [0, 0] },
+        { "id": "B", "name": "B", "position": [60, 0] }
+      ],
+      "directions": [],
+      "lines": [],
+      "circles": [],
+      "arcs": []  
+    },
+    {
+      "id": "L3",
+      "name": "coupler",
+      "isGrounded": false,
+      "pose": { "position": [100, 100], "angle": -60 },
+      "points": [
+        { "id": "B3", "name": "B3", "position": [0, 0] },
+        { "id": "C", "name": "C", "position": [120, 0] }
+      ],
+      "directions": [],
+      "lines": [],
+      "circles": [],
+      "arcs": []
+    },
+    {
+      "id": "L4",
+      "name": "slider",
+      "isGrounded": false,
+      "pose": { "position": [180, 0], "angle": 0 },
+      "points": [
+        { "id": "C4", "name": "C4", "position": [0, 0] },
+        { "id": "D4", "name": "D4", "position": [20, 0] }
+      ],
+      "directions": [
+        { "id": "x_axis", "name": "x_axis", "angle": 0 }
+      ],
+      "lines": [],
+      "circles": [],
+      "arcs": []
+    }
+  ],
+  "joints": [
+    {
+      "id": "R1",
+      "name": "A_rev",
+      "type": "revolute",
+      "parent": "L1",
+      "point_id_parent": "A",
+      "child": "L2",
+      "point_id_child": "A2"
+    },
+    {
+      "id": "R2",
+      "name": "B_rev",
+      "type": "revolute",
+      "parent": "L2",
+      "point_id_parent": "B",
+      "child": "L3",
+      "point_id_child": "B3"
+    },
+    {
+      "id": "R3",
+      "name": "C_rev",
+      "type": "revolute",
+      "parent": "L3",
+      "point_id_parent": "C",
+      "child": "L4",
+      "point_id_child": "C4"
+    },
+    {
+      "id": "P1",
+      "name": "slider",
+      "type": "prismatic",
+      "parent": "L1",
+      "axis_parent": {
+        "point_id": "D",
+        "direction_id": "x_axis"
+      },
+      "child": "L4",
+      "axis_child": {
+        "point_id": "D4",
+        "direction_id": "x_axis"
+      }
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "version": "1.0",
+  "id": "four_bar_weld_example",
+  "name": "Planar Four-Bar with Welded Link",
+  "type": "planar_mechanism",
+  "unit_length": "mm",
+  "unit_angle": "deg",
+  "convention": {
+    "world_frame": "x-right, y-up, ccw-positive"
+  },
+  "links": [
+    {
+      "id": "L1",
+      "name": "ground",
+      "isGrounded": true,
+      "pose": {"position": [0, 0], "angle": 0},
+      "points": [
+        {"id": "A", "name": "A", "position": [0, 0]},
+        {"id": "D", "name": "D", "position": [220, 0]}
+      ],
+      "directions": [
+        {"id": "ax0", "name": "x_axis", "angle": 0}
+      ],
+      "lines": [
+        {"id": "AD", "name": "AD", "point_ids": ["A", "D"]}
+      ],
+      "circles": [],
+      "arcs": []
+    },
+    {
+      "id": "L2",
+      "name": "input",
+      "isGrounded": false,
+      "pose": {"position": [50, 50], "angle": 45},
+      "points": [
+        {"id": "A2", "name": "A2", "position": [0, 0]},
+        {"id": "B", "name": "B", "position": [120, 0]}
+      ],
+      "directions": [],
+      "lines": [],
+      "circles": [],
+      "arcs": []
+    },
+    {
+      "id": "L3",
+      "name": "coupler",
+      "isGrounded": false,
+      "pose": {"position": [200, 100], "angle": 30},
+      "points": [
+        {"id": "B3", "name": "B3", "position": [0, 0]},
+        {"id": "C", "name": "C", "position": [150, 0]},
+        {"id": "midpoint", "name": "E", "position": [75, 75]}
+      ],
+      "directions": [],
+      "lines": [],
+      "circles": [],
+      "arcs": []
+    },
+    {
+      "id": "L4",
+      "name": "output",
+      "isGrounded": false,
+      "pose": {"position": [220, 0], "angle": 0},
+      "points": [
+        {"id": "C4", "name": "C4", "position": [220, 0]},
+        {"id": "D4", "name": "D4", "position": [0, 0]}
+      ],
+      "directions": [],
+      "lines": [],
+      "circles": [],
+      "arcs": []
+    },
+    {
+      "id": "L5",
+      "name": "welded_link",
+      "isGrounded": false,
+      "pose": {"position": [250, 150], "angle": 0},
+      "points": [
+        {"id": "P", "name": "P", "position": [0, 0]},
+        {"id": "Q", "name": "Q", "position": [50, 0]},
+        {"id": "C1", "name": "Circle Center", "position": [100, 100]}
+      ],
+      "directions": [],
+      "lines": [],
+      "circles": [
+        {"id": "circle1", "name": "Circle 1", "center_point_id": "C1", "radius": 50}
+      ],
+      "arcs": []
+    }
+  ],
+  "joints": [
+    {"id": "R1", "name": "R1", "type": "revolute", "parent": "L1", "point_id_parent": "A", "child": "L2", "point_id_child": "A2"},
+    {"id": "R2", "name": "R2", "type": "revolute", "parent": "L2", "point_id_parent": "B", "child": "L3", "point_id_child": "B3"},
+    {"id": "R3", "name": "R3", "type": "revolute", "parent": "L3", "point_id_parent": "C", "child": "L4", "point_id_child": "C4"},
+    {"id": "R4", "name": "R4", "type": "revolute", "parent": "L1", "point_id_parent": "D", "child": "L4", "point_id_child": "D4"},
+    {"id": "W1", "name": "Weld", "type": "weld", "parent": "L3", "child": "L5", "relative_pos": [0, 0], "relative_angle": 0}
+  ]
+}

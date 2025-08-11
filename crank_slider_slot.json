@@ -1,0 +1,100 @@
+{
+  "version": "1",
+  "id": "crank_slider_slot",
+  "type": "planar_mechanism",
+  "convention": {},
+  "name": "Crank-Slider with Pin-in-Slot Joint",
+  "unit_length": "mm",
+  "unit_angle": "deg",
+  "links": [
+    {
+      "id": "ground",
+      "name": "Ground",
+      "isGrounded": true,
+      "directions": [
+        {"id": "x", "name": "X Axis", "angle": 0},
+        {"id": "y", "name": "Y Axis", "angle": 90}
+      ],
+      "lines": [
+        {"id": "ground_line", "name": "Ground Edge", "point_ids": ["A", "B"]},
+        {"id": "slot_line", "name": "Slot", "point_ids": ["slot_start", "slot_end"]}
+      ],
+      "circles": [],
+      "arcs": [],
+      "pose": {"position": [0, 0], "angle": 0},
+      "points": [
+        {"id": "A", "name": "Ground A", "position": [0, 0]},
+        {"id": "B", "name": "Ground B", "position": [100, 0]},
+        {"id": "slot_start", "name": "Slot Start", "position": [50, 0]},
+        {"id": "slot_end", "name": "Slot End", "position": [150, 0]}
+      ]
+    },
+    {
+      "id": "crank",
+      "name": "Crank",
+      "isGrounded": false,
+      "directions": [
+        {"id": "x", "name": "X Axis", "angle": 0},
+        {"id": "y", "name": "Y Axis", "angle": 90}
+      ],
+      "lines": [
+        {"id": "crank_line", "name": "Crank Arm", "point_ids": ["O", "C"]}
+      ],
+      "circles": [],
+      "arcs": [],
+      "pose": {"position": [50, 50], "angle": 40},
+      "points": [
+        {"id": "C", "name": "Crank End", "position": [40, 0]},
+        {"id": "O", "name": "Crank Pivot", "position": [0, 0]}
+      ]
+    },
+    {
+      "id": "coupler",
+      "name": "Coupler",
+      "isGrounded": false,
+      "directions": [
+        {"id": "x", "name": "X Axis", "angle": 0},
+        {"id": "y", "name": "Y Axis", "angle": 90}
+      ],
+      "lines": [
+        {"id": "coupler_line", "name": "Coupler Bar", "point_ids": ["D", "E"]}
+      ],
+      "circles": [],
+      "arcs": [],
+      "pose": {"position": [0, 0], "angle": 0},
+      "points": [
+        {"id": "D", "name": "Coupler Pivot", "position": [0, 0]},
+        {"id": "E", "name": "Slider Pin", "position": [100, 0]}
+      ]
+    }
+  ],
+  "joints": [
+    {
+  "id": "R1",
+  "name": "Crank Pivot",
+  "type": "revolute",
+  "parent": "ground",
+  "point_id_parent": "A",
+  "child": "crank",
+  "point_id_child": "O"
+    },
+    {
+  "id": "R2",
+  "name": "Coupler Pivot",
+  "type": "revolute",
+  "parent": "crank",
+  "point_id_parent": "C",
+  "child": "coupler",
+  "point_id_child": "D"
+    },
+    {
+      "id": "PIS1",
+      "name": "Pin in Slot",
+      "type": "pin-in-slot",
+      "parent": "ground",
+      "line_id_parent": "slot_line",
+      "child": "coupler",
+      "point_id_child": "E"
+    }
+  ]
+}

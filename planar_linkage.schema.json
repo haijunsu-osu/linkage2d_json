@@ -337,7 +337,7 @@
         "parent",
         "axis_parent",
         "child",
-        "point_id_child"
+        "axis_child"
       ],
       "properties": {
         "id": {
@@ -363,16 +363,21 @@
             "direction_id"
           ],
           "properties": {
-            "point_id": {
-              "type": "string"
-            },
-            "direction_id": {
-              "type": "string"
-            }
+            "point_id": { "type": "string" },
+            "direction_id": { "type": "string" }
           }
         },
-        "point_id_child": {
-          "type": "string"
+        "axis_child": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "point_id",
+            "direction_id"
+          ],
+          "properties": {
+            "point_id": { "type": "string" },
+            "direction_id": { "type": "string" }
+          }
         },
         "limits": {
           "type": "object",
