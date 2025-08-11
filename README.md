@@ -1,33 +1,61 @@
 
-# Planar Linkage JSON Schema & Toolkit
+
+# Planar Linkage JSON Schema & OOP Toolkit
 
 This repository provides:
 - A **JSON schema** for describing arbitrary planar mechanisms
-- A Python package and CLI for validation, solving, visualization, and animation
+- A fully object-oriented Python package (`Linkage2D` and related classes) for loading, solving, visualizing, and animating mechanisms
+- A CLI (`linkage_tools.py`) for validation, solving, visualization, and animation (including OOP-based animation)
 
-
-This repository defines a **JSON schema** for describing **arbitrary planar mechanisms**.  
-It is designed to store only the **minimal set of parameters** required to reconstruct a linkage in 2D space.
+All features are available both via the CLI and the OOP Python API.
 
 ---
 
-## 📜 Overview
+## � OOP Workflow Overview
 
-The JSON file is a **human-readable** and **machine-parseable** representation of:
+The core of this toolkit is the `Linkage2D` class, which mirrors the JSON schema and provides methods for:
+- Loading mechanisms from JSON (`Linkage2D.from_json`)
+- Solving the constraint closure problem (`linkage.solve_linkage()`)
+- Visualizing and animating mechanisms (see `plot_linkage2d`, `animate_linkage2d`)
 
-1. **Global mechanism metadata** (ID, name, type, units, coordinate conventions)
-2. **Links** (rigid bodies with their local geometry)
-3. **Joints** (constraints between two links)
+All joint types are fully supported: **revolute**, **prismatic**, **pin-in-slot**, **gear**, and **weld**.
 
-The schema supports the following **joint types**:
+---
 
-- **`revolute` (R)**: pin joint, constrains two points to coincide
-- **`prismatic` (P)**: slider, constrains a point to move along a line axis
-- **`pin-in-slot`**: constrains a point to slide along a finite slot
-- **`gear`**: constrains angles of two links with a fixed ratio and optional phase offset
-- **`weld`**: rigidly fixes one link to another (no relative motion)
+## 🖥️ Usage: Python CLI & OOP API
 
-All joint types are fully supported in the solver and visualization tools.
+### CLI Commands
+
+```bash
+python linkage_tools.py validate <schema.json> <mechanism.json>   # Validate against schema
+python linkage_tools.py visualize <mechanism.json>                # Static plot
+python linkage_tools.py solve_and_plot <mechanism.json>           # Solve and plot configuration
+python linkage_tools.py animate <mechanism.json>                  # Animate (legacy, procedural)
+python linkage_tools.py animate2d <mechanism.json>                # Animate (OOP, recommended)
+```
+
+### OOP Python API Example
+
+```python
+from planar_linkage.linkage2d import Linkage2D
+import matplotlib.pyplot as plt
+import json
+
+# Load mechanism from JSON
+with open('four_bar.json') as f:
+  data = json.load(f)
+linkage = Linkage2D.from_json(data)
+
+# Solve the linkage
+linkage.solve_linkage()
+
+# Visualize
+from linkage_tools import plot_linkage2d
+plot_linkage2d(linkage)
+plt.show()
+
+# Animate (see linkage_tools.py for animate_linkage2d)
+```
 
 ---
 
@@ -37,18 +65,7 @@ All joint types are fully supported in the solver and visualization tools.
 - **Link-local frame**: Each link has its own coordinate system. All geometry (`points`, `directions`, `lines`, `circles`, `arcs`) is expressed in this local frame.
 - **Pose**: `pose.position` and `pose.angle` define the transform from link-local to the global frame.
 
-## 🚀 Usage: Python CLI
 
-The main entry point is `linkage_tools.py`:
-
-```bash
-python linkage_tools.py validate <mechanism.json>         # Validate against schema
-python linkage_tools.py plot <mechanism.json>             # Static plot
-python linkage_tools.py solve_and_plot <mechanism.json>   # Solve and plot configuration
-python linkage_tools.py animate <mechanism.json>          # Animate mechanism motion
-```
-
----
 
 ## 🔗 Link Definition
 
@@ -195,6 +212,7 @@ Each joint connects a **parent** link to a **child** link.
 
 ---
 
+
 ## 📂 Example Mechanisms
 
 The following example JSON files are included and schema-compliant:
@@ -270,8 +288,8 @@ The following example JSON files are included and schema-compliant:
 
 ---
 
-## 📏 Validation
 
+## 📏 Validation
 
 You can validate any mechanism JSON file using the CLI or directly with Python and the provided schema:
 
@@ -299,6 +317,7 @@ python linkage_tools.py validate my_linkage.json
 ```
 
 ---
+
 
 ## 📜 License
 
