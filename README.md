@@ -187,13 +187,11 @@ Each joint connects a **parent** link to a **child** link.
   "type": "weld",
   "parent": "L1",
   "child":  "L3",
-  "relative_pos": [10, 10],
-  "relative_angle": 90.0,
-  "frame": "parent"
+  "relative_pose": { "position": [10, 10], "angle": 90.0 }
 }
 ```
 
-**Definition:** `L3` is fixed rigidly to `L1` with a constant relative position and angle.
+**Definition:** `L3` is fixed rigidly to `L1` with a constant relative pose (position and angle) in the parent link's frame.
 
 ---
 
