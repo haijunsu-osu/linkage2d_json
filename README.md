@@ -1,4 +1,10 @@
-# Planar Linkage JSON Schema
+
+# Planar Linkage JSON Schema & Toolkit
+
+This repository provides:
+- A **JSON schema** for describing arbitrary planar mechanisms
+- A Python package and CLI for validation, solving, visualization, and animation
+
 
 This repository defines a **JSON schema** for describing **arbitrary planar mechanisms**.  
 It is designed to store only the **minimal set of parameters** required to reconstruct a linkage in 2D space.
@@ -21,6 +27,8 @@ The schema supports the following **joint types**:
 - **`gear`**: constrains angles of two links with a fixed ratio and optional phase offset
 - **`weld`**: rigidly fixes one link to another (no relative motion)
 
+All joint types are fully supported in the solver and visualization tools.
+
 ---
 
 ## 📐 Coordinate Conventions
@@ -28,6 +36,17 @@ The schema supports the following **joint types**:
 - **Global frame**: +X right, +Y up, counterclockwise angles are positive.
 - **Link-local frame**: Each link has its own coordinate system. All geometry (`points`, `directions`, `lines`, `circles`, `arcs`) is expressed in this local frame.
 - **Pose**: `pose.position` and `pose.angle` define the transform from link-local to the global frame.
+
+## 🚀 Usage: Python CLI
+
+The main entry point is `linkage_tools.py`:
+
+```bash
+python linkage_tools.py validate <mechanism.json>         # Validate against schema
+python linkage_tools.py plot <mechanism.json>             # Static plot
+python linkage_tools.py solve_and_plot <mechanism.json>   # Solve and plot configuration
+python linkage_tools.py animate <mechanism.json>          # Animate mechanism motion
+```
 
 ---
 
@@ -44,7 +63,7 @@ A `link` entry contains:
 | `points`     | List of points fixed on the link |
 | `directions` | List of direction vectors fixed on the link (angle in link-local frame) |
 | `lines`      | Lines fixed on the link, defined by two point IDs |
-| `circles`    | Circles fixed on the link |
+| `circles`    | Circles fixed on the link (with `center_point_id` and `radius`) |
 | `arcs`       | Arcs fixed on the link |
 
 ### Example Link with All Geometry Types
@@ -180,6 +199,13 @@ Each joint connects a **parent** link to a **child** link.
 
 ## 📂 Example Mechanisms
 
+The following example JSON files are included and schema-compliant:
+- `four_bar.json` (four-bar linkage)
+- `crank_slider.json` (slider-crank)
+- `crank_slider_slot.json` (crank-slider with slot)
+- `four_bar_weld.json` (four-bar with welded link and circle)
+
+
 ### A. Planar Four-Bar
 
 - Links: Ground, Input, Coupler, Output
@@ -248,8 +274,8 @@ Each joint connects a **parent** link to a **child** link.
 
 ## 📏 Validation
 
-A JSON Schema (`planar_linkage.schema.json`) is provided to validate any linkage file.  
-You can validate using Python:
+
+You can validate any mechanism JSON file using the CLI or directly with Python and the provided schema:
 
 ```bash
 pip install jsonschema
@@ -267,6 +293,11 @@ with open("my_linkage.json") as f:
 
 jsonschema.validate(instance=data, schema=schema)
 print("Valid JSON linkage!")
+```
+
+Or use the CLI:
+```bash
+python linkage_tools.py validate my_linkage.json
 ```
 
 ---
